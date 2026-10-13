@@ -6,28 +6,60 @@
   box.className = 'lightbox';
   box.setAttribute('role', 'dialog');
   box.setAttribute('aria-modal', 'true');
+  box.setAttribute('aria-label', 'Artwork details');
   box.innerHTML =
-    '<button class="close" aria-label="Close">&times;</button>' +
-    '<button class="prev" aria-label="Previous">&#8249;</button>' +
-    '<img alt="">' +
-    '<button class="next" aria-label="Next">&#8250;</button>';
+    '<div class="lightbox-controls">' +
+      '<button class="expand" aria-label="Enlarge image" aria-pressed="false">&#8599;</button>' +
+      '<button class="close" aria-label="Close">&times;</button>' +
+    '</div>' +
+    '<div class="lightbox-content">' +
+      '<button class="prev" aria-label="Previous image">&#8249;</button>' +
+      '<div class="lightbox-media"><img alt=""></div>' +
+      '<button class="next" aria-label="Next image">&#8250;</button>' +
+      '<aside class="lightbox-info">' +
+        '<h2></h2>' +
+        '<p class="lightbox-year"></p>' +
+        '<p class="lightbox-medium"></p>' +
+      '</aside>' +
+    '</div>';
   document.body.appendChild(box);
 
   var img = box.querySelector('img');
+  var title = box.querySelector('.lightbox-info h2');
+  var year = box.querySelector('.lightbox-year');
+  var medium = box.querySelector('.lightbox-medium');
+  var expandButton = box.querySelector('.expand');
   var index = 0;
 
   function show(i) {
     index = (i + links.length) % links.length;
-    img.src = links[index].getAttribute('href');
-    img.alt = links[index].querySelector('img').alt || '';
+    var link = links[index];
+    var thumbnail = link.querySelector('img');
+    var filename = link.getAttribute('href').split('/').pop().replace(/\.[^.]+$/, '');
+    title.textContent = link.dataset.title || thumbnail.alt || filename;
+    year.textContent = link.dataset.year || 'Not listed';
+    medium.textContent = link.dataset.medium || '';
+    medium.hidden = !link.dataset.medium;
+    img.src = link.getAttribute('href');
+    img.alt = title.textContent;
   }
   function open(i) { show(i); box.classList.add('open'); }
-  function close() { box.classList.remove('open'); img.removeAttribute('src'); }
+  function close() {
+    box.classList.remove('open', 'expanded');
+    expandButton.setAttribute('aria-pressed', 'false');
+    expandButton.setAttribute('aria-label', 'Enlarge image');
+    img.removeAttribute('src');
+  }
 
   links.forEach(function (a, i) {
     a.addEventListener('click', function (e) { e.preventDefault(); open(i); });
   });
 
+  expandButton.addEventListener('click', function () {
+    var expanded = box.classList.toggle('expanded');
+    expandButton.setAttribute('aria-pressed', String(expanded));
+    expandButton.setAttribute('aria-label', expanded ? 'Show details' : 'Enlarge image');
+  });
   box.querySelector('.close').addEventListener('click', close);
   box.querySelector('.prev').addEventListener('click', function () { show(index - 1); });
   box.querySelector('.next').addEventListener('click', function () { show(index + 1); });
