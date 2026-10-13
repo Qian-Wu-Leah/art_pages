@@ -116,8 +116,30 @@ main {
 .resume dl { margin: 0 0 2em; }
 .resume dt { font-weight: 600; letter-spacing: 0.08em; margin-top: 1.6em; font-size: 14px; }
 .resume dd { margin: 0.4em 0 0; }
-.resume .about { text-align: center; margin-top: 3em; }
-.resume .about img { max-width: 100%; height: auto; margin-top: 1.2em; }
+.resume .about {
+  text-align: left;
+  margin-top: 3em;
+}
+.resume .about h2 {
+  margin: 0 0 18px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+.resume .about img { display: block; width: 360px; max-width: 100%; height: auto; margin: 0 auto 1em; }
+.resume .about h3 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  text-align: left;
+}
+.resume .about p {
+  margin: 0.3em 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #3e3e3e;
+  text-align: left;
+}
 
 /* ---------- Contact ---------- */
 .contact-info { text-align: center; margin-bottom: 2em; }
